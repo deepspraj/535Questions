@@ -41,9 +41,11 @@ jobs:
       - name: Run Ruff
         uses: astral-sh/ruff-action@v3
         with:
+          version: "0.16.3"
           args: check .
 
       - name: Check formatting
         uses: astral-sh/ruff-action@v3
         with:
+          version: "0.16.3"
           args: format --check .
