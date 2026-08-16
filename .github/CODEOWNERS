@@ -1,1 +1,74 @@
+# ============================================================
+# 535Questions - CODEOWNERS
+# ============================================================
+#
+# This file defines who should review changes to specific
+# files and directories in the repository.
+#
+# Documentation:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Rules:
+# - The last matching pattern takes precedence.
+# - Paths are relative to the repository root.
+# - Use GitHub usernames (@username) or teams (@org/team).
+# - Keep ownership rules specific as the project grows.
+#
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Default Owner
+# ------------------------------------------------------------
+# All files are owned by the repository maintainer by default.
+#
 * @deepspraj
+
+
+# ------------------------------------------------------------
+# Application / Source Code
+# ------------------------------------------------------------
+# /src/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# Tests
+# ------------------------------------------------------------
+# /tests/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# Constitutional / Research Data
+# ------------------------------------------------------------
+# /data/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# Documentation
+# ------------------------------------------------------------
+# /docs/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# GitHub Configuration
+# ------------------------------------------------------------
+# /.github/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# AI / RAG Components
+# ------------------------------------------------------------
+# /src/retrieval/ @YOUR_GITHUB_USERNAME
+# /src/evaluation/ @YOUR_GITHUB_USERNAME
+# /src/embeddings/ @YOUR_GITHUB_USERNAME
+
+
+# ------------------------------------------------------------
+# Security-Sensitive Files
+# ------------------------------------------------------------
+# Changes to repository security configuration should require
+# explicit maintainer review.
+#
+# /.github/workflows/ @YOUR_GITHUB_USERNAME
+# /.gitleaks.toml @YOUR_GITHUB_USERNAME
+# .pre-commit-config.yaml @YOUR_GITHUB_USERNAME
