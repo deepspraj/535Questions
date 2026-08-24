@@ -31,7 +31,4 @@ def set_cwd(*args, **kwargs) -> str:
     # Change the current working directory to the root
     os.chdir(root_dir)
 
-    # Verify the change
-    print(f"New Working Directory: {os.getcwd()}")
-
     return os.getcwd()
