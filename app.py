@@ -2,8 +2,9 @@
 
 from dotenv import dotenv_values
 
+from chunkers import Chunker
 from config.config import set_cwd
-from scrappers import scrape_pdf
+from scrappers import PDFScraper
 
 if __name__ == "__main__":
     # Set Root folder as current working directory
@@ -12,4 +13,8 @@ if __name__ == "__main__":
     # Load env specific values
     envkeys = dotenv_values(".env")
 
-    pages = scrape_pdf("data\\Constitutions\\USA\\ConstitutionOfUSA.pdf")
+    scrapper = PDFScraper("data\\Constitutions\\USA\\ConstitutionOfUSA.pdf")
+    chunker = Chunker()
+
+    pages = scrapper.scrape_pdf()
+    chunks = chunker.recursive_chunker(pages)
