@@ -60,7 +60,23 @@ class VectorStore:
         return True
 
     def _create_connection(self, *args, **kwargs) -> bool:
+        """Force a fresh connection to the ChromaDB client.
 
+        Sometimes the client hasn't been initialized yet when we try to
+        use a collection. This just spins up a new PersistentClient at
+        the configured path so everything else can work without crashing.
+
+        Args:
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
+
+        Returns:
+            True once the connection is successfully established.
+
+        Example:
+            self._create_connection()
+
+        """
         self.cdb_client = chromadb.PersistentClient(path=self.db_path)
         return True
 
