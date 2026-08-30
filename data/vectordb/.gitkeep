@@ -1,0 +1,2 @@
+# Keep this empty directory tracked in Git
+# Place where the chromadb will be created when no customized path is provided
