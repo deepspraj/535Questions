@@ -1,5 +1,7 @@
 """Embedder module."""
 
+from .auth_methods.gemini import GeminiEmbedder
+
 
 class Embedder:
     """Base class for Embedders."""
@@ -11,7 +13,7 @@ class Embedder:
         service_provier: str = None,
         *args,
         **kwargs,
-    ) -> bool:
+    ) -> None:
         """Initialize the Embedder instance.
 
         Args:
@@ -22,7 +24,7 @@ class Embedder:
             **kwargs: Additional keyword arguments.
 
         Returns:
-            bool: True upon successful initialization.
+            None: No return upon successful initialization.
 
         """
         if not model_name:
@@ -32,9 +34,13 @@ class Embedder:
         if not service_provier:
             raise ValueError("No Embedding Service Provider name provided.")
 
+        # self._authenticated = self._authenticator(model_name, api_key, service_provier)
         self.model_name = model_name
+        self.api_key = api_key
+        self.provider = service_provier.lower()
+        self._authenticated = True
 
-        return True
+        return None
 
     def _authenticator(self, model_name, api_key, provider, *args, **kwargs) -> bool:
         """Authenticate with the specified provider.
@@ -51,40 +57,24 @@ class Embedder:
 
         """
         if "gemini" in provider.lower():
-            return self._google_authenticator(model_name, api_key, provider, *args, **kwargs)
+            return GeminiEmbedder._validate_token(api_key)
 
         elif "groq" in provider.lower():
-            return self._groq_authenticator(model_name, api_key, provider, *args, **kwargs)
+            raise NotImplementedError("Groq authenticator is not implemented yet.")
 
         elif "claude" in provider.lower():
-            return self._claude_authenticator(model_name, api_key, provider, *args, **kwargs)
+            raise NotImplementedError("Claude authenticator is not implemented yet.")
 
         elif "openai" in provider.lower():
-            return self._openai_authenticator(model_name, api_key, provider, *args, **kwargs)
+            raise NotImplementedError("OpenAI authenticator is not implemented yet.")
 
         else:
             raise ValueError(
-                "Currently the embedder supports Gemini, Groq and Claude. "
+                "Currently the embedder supports Gemini, Groq, Claude and OpenAI. "
                 "Please choose either of this."
             )
 
         return False
-
-    def _google_authenticator(self, *args, **kwargs) -> bool:
-        """Authenticate with Google."""
-        raise NotImplementedError("Google authenticator not implemented.")
-
-    def _groq_authenticator(self, *args, **kwargs) -> bool:
-        """Authenticate with Groq."""
-        raise NotImplementedError("Groq authenticator not implemented.")
-
-    def _claude_authenticator(self, *args, **kwargs) -> bool:
-        """Authenticate with Claude."""
-        raise NotImplementedError("Claude authenticator not implemented.")
-
-    def _openai_authenticator(self, *args, **kwargs) -> bool:
-        """Authenticate with OpenAI."""
-        raise NotImplementedError("OpenAI authenticator not implemented.")
 
     def model_update(self, new_model_name, *args, **kwargs) -> bool:
         """Update the embedding model.
@@ -107,11 +97,20 @@ class Embedder:
 
         return True
 
-    def embed(self, chunk, *args, **kwargs) -> dict[str, list[float]]:
+    def _create_client(self, *args, **kwargs) -> object:
+
+        if "gemini" in self.provider:
+            from google import genai
+
+            client = genai.Client(api_key=self.api_key)
+            return client
+        return None
+
+    def embed(self, chunks: list[str], *args, **kwargs) -> dict[str, list[float]]:
         """Generate embeddings for a chunk of text.
 
         Args:
-            chunk (str): The text chunk to embed.
+            chunks (list[str]): The text chunks to embed.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -119,4 +118,19 @@ class Embedder:
             dict[str, list[float]]: The generated embeddings.
 
         """
-        return None
+        if not self._authenticated:
+            raise ValueError(
+                f"Please Authenticate the token before using embedding sevice of {self.provider}."
+            )
+
+        client = self._create_client()
+
+        embeddings = {}
+
+        for chunk in chunks:
+            result = client.models.embed_content(model=self.model_name, contents=chunk)
+
+            embedding_chunk = result.embeddings[0].values
+            embeddings[chunk] = embedding_chunk
+
+        return embeddings

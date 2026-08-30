@@ -1,3 +1,5 @@
 """Utilities for Embedders."""
 
-__all__ = []
+from .embedder import Embedder
+
+__all__ = ["Embedder"]
