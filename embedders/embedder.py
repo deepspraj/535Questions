@@ -1,5 +1,9 @@
 """Embedder module."""
 
+from hashlib import md5
+
+from chromadb.api.models.Collection import Collection
+
 from .auth_methods.gemini import GeminiEmbedder
 
 
@@ -175,5 +179,61 @@ class Embedder:
 
             embedding_chunk = result.embeddings[0].values
             embeddings[chunk] = embedding_chunk
+
+        return embeddings
+
+    def save_embed_to_store(
+        self,
+        chunks: list[str],
+        file_name: str,
+        file_path: str,
+        db_coll: Collection,
+        *args,
+        **kwargs,
+    ) -> None:
+        """Process and save chunks to the vector database.
+
+        This loops through the chunks of text, calculates a quick MD5 hash
+        to see if we've already saved it before, and if it's new, we hit the
+        embedding API and store the result in ChromaDB with all its metadata.
+
+        Args:
+            chunks: A list of text strings we want to embed and save.
+            file_name: The name of the file these chunks came from.
+            file_path: The absolute path to the original file.
+            db_coll: The ChromaDB Collection where we'll save the embeddings.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
+
+        Returns:
+            Nothing.
+
+        Example:
+            embedder.save_embed_to_store(chunks, "doc.pdf", "/path/to", coll)
+
+        """
+        client = self._create_client()
+
+        embeddings = {}
+
+        for index, chunk in enumerate(chunks):
+            chunk_hash = md5(chunk.encode("utf-8"), usedforsecurity=False).hexdigest()
+
+            db_result = db_coll.get(ids=[chunk_hash], include=[])
+
+            if db_result:
+                print("already in db")
+                continue
+
+            result = client.models.embed_content(model=self.model_name, contents=chunk)
+
+            db_coll.add(
+                ids=[chunk_hash],
+                documents=[chunk],
+                embeddings=[result.embeddings[0].values],
+                metadatas=[
+                    {"file_path": file_path, "file_name": file_name, "chunk_index": index + 1}
+                ],
+            )
 
         return embeddings

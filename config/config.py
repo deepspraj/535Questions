@@ -75,3 +75,25 @@ class WorkingDirectory:
 
         """
         return os.getcwd()
+
+    @staticmethod
+    def empty_dir(path, *args, **kwargs) -> bool:
+        """Check if a directory is empty.
+
+        This peeks inside the given folder path to see if there's anything
+        in it. It's super useful for checking if a directory is empty before
+        we try to initialize a new database in it!
+
+        Args:
+            path: The folder path you want to peek inside.
+            *args: Extra positional arguments (ignored).
+            **kwargs: Extra keyword arguments (ignored).
+
+        Returns:
+            True if the folder is completely empty, False if it has files.
+
+        Example:
+            is_empty = WorkingDirectory.empty_dir("./my_folder")
+
+        """
+        return not os.listdir(path)
