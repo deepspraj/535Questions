@@ -1,5 +1,5 @@
 """Application configuration utilities."""
 
-from .config import set_cwd
+from .config import WorkingDirectory
 
-__all__ = ["set_cwd"]
+__all__ = ["WorkingDirectory"]

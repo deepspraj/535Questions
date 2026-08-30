@@ -16,15 +16,22 @@ class Embedder:
     ) -> None:
         """Initialize the Embedder instance.
 
+        This sets up the core embedding manager. It grabs your API key,
+        the model name, and the provider you want to use, so it's ready
+        to start vectorizing text later.
+
         Args:
-            model_name (str, optional): Name of the embedding model.
-            api_key (str, optional): API key for the service provider.
-            service_provier (str, optional): Name of the service provider.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            model_name: The specific model to use (like 'text-embedding-004').
+            api_key: Your secret API key.
+            service_provier: The provider's name (like 'gemini' or 'openai').
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            None: No return upon successful initialization.
+            Nothing.
+
+        Example:
+            embedder = Embedder("text-embedding-004", "my-key", "gemini")
 
         """
         if not model_name:
@@ -45,15 +52,22 @@ class Embedder:
     def _authenticator(self, model_name, api_key, provider, *args, **kwargs) -> bool:
         """Authenticate with the specified provider.
 
+        This routes the API key to the correct provider's authentication
+        method to make sure the token is actually valid before we try to
+        use it. Right now, only Gemini is fully hooked up!
+
         Args:
-            model_name (str): Name of the embedding model.
-            api_key (str): API key for the service provider.
-            provider (str): Name of the service provider.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            model_name: The embedding model name.
+            api_key: Your secret API key.
+            provider: The service provider to authenticate against.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            bool: True if authentication is successful, False otherwise.
+            True if authentication succeeds, False otherwise.
+
+        Example:
+            is_valid = self._authenticator("model-name", "my-key", "gemini")
 
         """
         if "gemini" in provider.lower():
@@ -79,13 +93,19 @@ class Embedder:
     def model_update(self, new_model_name, *args, **kwargs) -> bool:
         """Update the embedding model.
 
+        Need to switch to a different embedding model on the fly? Use this
+        to update the model name without having to recreate the whole class.
+
         Args:
-            new_model_name (str): New name for the embedding model.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            new_model_name: The new model string you want to switch to.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            bool: True if the model was updated.
+            True once the model has been updated.
+
+        Example:
+            self.model_update("new-embedding-model-v2")
 
         """
         if not new_model_name:
@@ -98,7 +118,22 @@ class Embedder:
         return True
 
     def _create_client(self, *args, **kwargs) -> object:
+        """Create the actual provider client.
 
+        This internal method spins up the specific API client based on
+        which provider you're using (like the google-genai Client).
+
+        Args:
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
+
+        Returns:
+            The initialized client object, or None if unsupported.
+
+        Example:
+            client = self._create_client()
+
+        """
         if "gemini" in self.provider:
             from google import genai
 
@@ -107,15 +142,23 @@ class Embedder:
         return None
 
     def embed(self, chunks: list[str], *args, **kwargs) -> dict[str, list[float]]:
-        """Generate embeddings for a chunk of text.
+        """Generate embeddings for a list of text chunks.
+
+        This is the main event. It takes a list of text chunks, fires them
+        off to the embedding provider, and returns a dictionary mapping each
+        piece of text to its generated vector.
 
         Args:
-            chunks (list[str]): The text chunks to embed.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            chunks: A list of text strings you want to embed.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            dict[str, list[float]]: The generated embeddings.
+            A dictionary where the keys are the text chunks and the values
+            are the list of floats representing the embeddings.
+
+        Example:
+            vectors = embedder.embed(["Hello world", "Another chunk"])
 
         """
         if not self._authenticated:

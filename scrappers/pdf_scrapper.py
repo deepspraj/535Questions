@@ -19,10 +19,19 @@ class PDFScraper:
     def __init__(self, path: str = None, *args, **kwargs):
         """Store the default PDF path used by the scraper.
 
+        Just sets up the scraper. You can give it a PDF path now, or you
+        can wait and pass the path directly to the scraping methods later.
+
         Args:
-            path (str): Path to the PDF file.
-            *args: Unused positional arguments retained for compatibility.
-            **kwargs: Unused keyword arguments retained for compatibility.
+            path: An optional default path to a PDF file.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
+
+        Returns:
+            Nothing.
+
+        Example:
+            scraper = PDFScraper("my_document.pdf")
 
         """
         self.path = path
@@ -31,23 +40,23 @@ class PDFScraper:
     def scrape_pdf_pagewise(
         self, path: str = None, metadata_needed: bool = False, *args, **kwargs
     ) -> list[dict]:
-        """Extract text for each page in a PDF.
+        """Extract text from a PDF, keeping each page separate.
 
-        If a path is provided, it is used for this call; otherwise the instance
-        path is used. Each page is added to a list as a dictionary containing the
-        page number and extracted text. When metadata_needed is true, the
-        dictionary also includes the page width, height, and raw text blocks.
+        This goes through the PDF page by page and rips out the text.
+        It returns a list where each item is a page, which is super handy if
+        you want to track which page a piece of information came from.
 
         Args:
-            path: Path to the PDF file. If omitted, uses the instance path.
-            metadata_needed: Whether to include page dimensions and block metadata.
-            *args: Unused positional arguments retained for compatibility.
-            **kwargs: Unused keyword arguments retained for compatibility.
+            path: An optional path if you want to override the default one.
+            metadata_needed: Set this to True if you also want page dimensions.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            A list of page dictionaries. Each item contains at least the
-            "page_number" and "text" keys. When metadata_needed is true, it also
-            includes "width", "height", and "blocks".
+            A list of dictionaries, where each dict has the text for one page.
+
+        Example:
+            pages = scraper.scrape_pdf_pagewise()
 
         """
         if not self.path and not path:
@@ -83,19 +92,22 @@ class PDFScraper:
         return pages
 
     def scrape_pdf(self, path: str = None, *args, **kwargs) -> str:
-        """Combine the text from all pages in a PDF into a single string.
+        """Extract all the text from a PDF into one giant string.
 
-        If a path is provided, it is used for this call; otherwise the instance
-        path is used. The method concatenates the extracted text from each page
-        into one string and returns it.
+        This just rips through the entire PDF and jams all the text from
+        every single page together into one big string. Great for when you
+        don't care about page numbers and just want the raw text.
 
         Args:
-            path: Path to the PDF file. If omitted, uses the instance path.
-            *args: Unused positional arguments retained for compatibility.
-            **kwargs: Unused keyword arguments retained for compatibility.
+            path: An optional path to override the default one.
+            *args: Extra positional args (ignored).
+            **kwargs: Extra keyword args (ignored).
 
         Returns:
-            A single string containing the concatenated text from all pages.
+            A single massive string containing all the text.
+
+        Example:
+            all_text = scraper.scrape_pdf()
 
         """
         if not self.path and not path:
