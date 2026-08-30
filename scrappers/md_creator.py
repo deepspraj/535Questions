@@ -6,21 +6,18 @@
 def convert_to_markdown(pages: list) -> None:
     """Convert PyMuPDF page data into Markdown.
 
-    This function converts the structured page data returned by
-    scrape_pdf() into Markdown format. It uses the observed font
-    sizes and font styles from the Constitution PDF to identify
-    titles, headings, table-of-contents entries, lists, and
-    basic text formatting.
+    We're still building this out! Eventually, it will take the raw page
+    data and format it into nice, clean Markdown so it's easier to read
+    and process.
 
     Args:
-        pages: A list of page dictionaries returned by scrape_pdf().
+        pages: A list of page dictionaries from our PDF scraper.
 
     Returns:
-        The extracted PDF content as a Markdown-formatted string.
+        Nothing right now. It just returns None until implemented.
 
     Example:
-        pages = scrape_pdf("data/Constitutions/USA/ConstitutionOfUSA.pdf")
-        markdown = convert_to_markdown(pages[:5])
+        convert_to_markdown(my_scraped_pages)
 
     """
     return None

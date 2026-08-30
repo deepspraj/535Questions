@@ -3,15 +3,22 @@ def _recursive_character_text_splitter(
 ) -> list[str]:
     """Split a string into smaller overlapping chunks.
 
+    This is the core logic that actually does the chopping. It takes a big
+    string, figures out the chunk size and overlap, and cleanly slices it
+    up into a list of smaller strings.
+
     Args:
-        text (str): Input text to chunk.
-        chunk_size (int): Maximum length of each chunk.
-        chunk_overlap (int): Number of characters shared between neighboring chunks.
-        *args: Unused positional arguments retained for compatibility.
-        **kwargs: Unused keyword arguments retained for compatibility.
+        text: The giant input string we need to chunk.
+        chunk_size: The max length for each chunk (default 1000).
+        chunk_overlap: How many characters to overlap (default 200).
+        *args: Extra positional args (ignored).
+        **kwargs: Extra keyword args (ignored).
 
     Returns:
-        list[str]: A list of chunk strings.
+        A list of smaller, overlapping string chunks.
+
+    Example:
+        chunks = _recursive_character_text_splitter("Some huge text...")
 
     """
     if not isinstance(text, str):

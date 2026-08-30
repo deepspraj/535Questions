@@ -216,4 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Extra
 .idea
+
+# ChromaDB
+data/vectordb/*
+!data/vectordb/.gitkeep
