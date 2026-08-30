@@ -4,6 +4,7 @@ from dotenv import dotenv_values
 
 from chunkers import Chunker
 from config.config import set_cwd
+from embedders import Embedder
 from scrappers import PDFScraper
 
 if __name__ == "__main__":
@@ -18,3 +19,10 @@ if __name__ == "__main__":
 
     pages = scrapper.scrape_pdf()
     chunks = chunker.recursive_chunker(pages)
+    embedder = Embedder(
+        envkeys["EMBEDDING_MODEL"],
+        envkeys["EMBEDDING_MODEL_API_KEY"],
+        envkeys["EMBEDDING_SERVICE_PROVIDER"],
+    )
+
+    embedder.embed([chunks[0]])
